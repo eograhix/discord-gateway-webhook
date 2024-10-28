@@ -125,11 +125,15 @@ async def webhook():
 async def get_events():
         return jsonify(msg), 200
 
+from flask import Response
+
 @app.route('/clear', methods=['GET'])
 async def clear_events():
-        global msg
-        msg = []
-        return 204
+    global msg, app_data
+    msg, app_data = [], []
+
+    return Response(status=204)
+
 
 
 @app.route('/app_data', methods=['GET'])
