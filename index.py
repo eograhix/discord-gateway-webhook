@@ -20,7 +20,7 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar, curre
 
     webhook_data = {
         "username": app_data[0]['name'],
-        "avatar_url": f"https://cdn.discordapp.com/app-icons/{app_data[0]['id']}/{app_data[0]['icon']}.gif",
+        "avatar_url": f"https://cdn.discordapp.com/app-icons/{app_data[0]['id']}/{app_data[0]['icon']}",
         "embeds": [
             {
                 "title": "BOT ADDED",
@@ -32,7 +32,7 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar, curre
                     {"name": "Pseudo:", "value": f"{user_globalName}", "inline": False},
                     
                 ],
-                "thumbnail": {"url": user_avatar},
+                "thumbnail": {"url": user_avatar+".gif"},
                                 "footer": {"text": f"Date: {current_date}"}
             }
         ]
