@@ -101,7 +101,8 @@ def webhook():
                     user_avatar = f"https://cdn.discordapp.com/avatars/{user_id}/{user['avatar']}"
                     current_date = event['timestamp'] #i need to sleep :skull:
 
-                    if app_data == []:
+                    global app_data
+                    if not app_data:
                         app_data = get_app_data(data.get('application_id'))
                         
                     send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
