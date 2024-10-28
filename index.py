@@ -32,7 +32,7 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar, curre
                     {"name": "Pseudo:", "value": f"{user_globalName}", "inline": False},
                     
                 ],
-                "thumbnail": {"url": user_avatar+".gif"},
+                "thumbnail": {"url": user_avatar},
                                 "footer": {"text": f"Date: {current_date}"}
             }
         ]
