@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "webhook endp",
+  "builds": [
+    {
+      "src": "./index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
+}
