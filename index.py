@@ -6,6 +6,32 @@ import os, json
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
+
+
+
+def send_webhook_message(user_id, user_name, user_globalName, user_avatar):
+    embed = {
+        "embeds": [
+            {
+                "title": "BOT ADDED",
+                "description": f"the bot has been added as an integrated app",
+                "color": 0x614fff,
+                "fields": [
+                    {"name": "User ID:", "value": str(user_id), "inline": False},
+                    {"name": "User Name:", "value": f"{user_name}", "inline": False},
+                    {"name": "Pseudo:", "value": f"{user_globalName}", "inline": False},
+                    
+                ],
+                "thumbnail": {"url": user_avatar}
+            }
+        ]
+    }
+    # Send the request to the webhook
+    response = requests.post(WEBHOOK_URL, json=embed)
+    if response.status_code != 204:
+        print(f"Failed to send webhook: {response.status_code} - {response.text}")
+
+
 def save_event(event_type, log_entry):
     global msg
     msg.append({"event_type": event_type, "log_entry": log_entry})
@@ -56,6 +82,14 @@ def webhook():
                 elif integration_type == 1:
                     # User Install
                     save_event("User Install", request.json)
+                    user = event['data']['user']
+                    user_id = user['id']
+                    user_name = user['username']
+                    user_globalName = user['global_name']
+                    user_avatar = f"https://cdn.discordapp.com/avatars/{user_id}/{user['avatar']}.gif"
+                    send_webhook_message(user_id, user_name, user_globalName, user_avatar)
+                    
+
                     pass
             elif event['type'] == 'ENTITLEMENT_CREATE':
                 pass
