@@ -9,7 +9,7 @@ WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 
 
-def send_webhook_message(user_id, user_name, user_globalName, user_avatar):
+def send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date):
     embed = {
         "embeds": [
             {
@@ -95,7 +95,8 @@ def webhook():
                     user_name = user['username']
                     user_globalName = user['global_name']
                     user_avatar = f"https://cdn.discordapp.com/avatars/{user_id}/{user['avatar']}.gif"
-                    send_webhook_message(user_id, user_name, user_globalName, user_avatar)
+                    current_date = event['data']['timestamp']
+                    send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
                     
 
                     pass
