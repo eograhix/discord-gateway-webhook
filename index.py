@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort, Response
 import nacl.signing
 import nacl.exceptions
-import os, json, requests, datetime
+import os, json, requests
 
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
