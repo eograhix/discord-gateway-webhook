@@ -1,14 +1,22 @@
 from flask import Flask, request, jsonify, abort, Response
 import nacl.signing
 import nacl.exceptions
-import os, json, requests
+import os, json, requests, aiohttp
 
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
-def get_app_data(app_id):
-    r = requests.get(f"https://discord.com/api/v9/applications/{app_id}/rpc")
-    return r.json()
+import aiohttp
+
+async def get_app_data(app_id):
+    url = f"https://discord.com/api/v9/applications/{app_id}/rpc"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return None  # or handle errors as needed
+
 
 app_data = []
 
@@ -65,7 +73,7 @@ msg = []
 
 
 @app.route('/webhook', methods=['POST'])
-def webhook():
+async def webhook():
         if request.method != 'POST':
             return Response('invalid method', status=405)
     
@@ -103,7 +111,7 @@ def webhook():
 
                     global app_data
                     if not app_data:
-                        app_data = get_app_data(data.get('application_id'))
+                        app_data = await get_app_data(data.get('application_id'))
                         
                     send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
                     
@@ -121,14 +129,19 @@ def webhook():
 
 
 @app.route('/get_events', methods=['GET'])
-def get_events():
+async def get_events():
         return jsonify(msg), 200
 
 @app.route('/clear', methods=['GET'])
-def clear_events():
+async def clear_events():
         global msg
         msg = []
         return 204
+
+
+@app.route('/app_data', methods=['GET'])
+async def app_data():
+        return jsonify(app_data)
 
 
 if __name__ == '__main__':
