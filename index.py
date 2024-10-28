@@ -6,7 +6,11 @@ import os, json, requests
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
+def get_app_data(app_id):
+    r = requests.get(f"https://discord.com/api/v9/applications/{app_id}/rpc")
+    return r.json()
 
+app_data = []
 
 
 def send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date):
@@ -29,8 +33,8 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar, curre
     }
 
     webhook_data = {
-        "username": "PopCord",
-        "avatar_url": f"https://cdn.discordapp.com/avatars/994970912271122452/5ed41345bbd638acf364b7324fce3da1.gif",
+        "username": app_data[0]['name'],
+        "avatar_url": f"https://cdn.discordapp.com/avatars/{app_data[0]['id']}/{app_data[0]['icon']}",
         **embed
     }
     
@@ -94,8 +98,12 @@ def webhook():
                     user_id = user['id']
                     user_name = user['username']
                     user_globalName = user['global_name']
-                    user_avatar = f"https://cdn.discordapp.com/avatars/{user_id}/{user['avatar']}.gif"
+                    user_avatar = f"https://cdn.discordapp.com/avatars/{user_id}/{user['avatar']}"
                     current_date = event['timestamp'] #i need to sleep :skull:
+
+                    if app_data == []:
+                        app_data = get_app_data(data.get('application_id'))
+                        
                     send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
                     
 
