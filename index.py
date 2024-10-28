@@ -111,7 +111,8 @@ async def webhook():
 
                     global app_data
                     if not app_data:
-                        app_data = await get_app_data(data.get('application_id'))
+                        await get_app_data(data.get('application_id'))
+                        app_data.append(data)
                         
                     send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
                     
