@@ -17,7 +17,10 @@ async def get_app_data(app_id):
 
 
 def send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date):
-    embed = {
+
+    webhook_data = {
+        "username": app_data[0]['name'],
+        "avatar_url": f"https://cdn.discordapp.com/app-icons/{app_data[0]['id']}/{app_data[0]['icon']}",
         "embeds": [
             {
                 "title": "BOT ADDED",
@@ -33,12 +36,6 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar, curre
                                 "footer": {"text": f"Date: {current_date}"}
             }
         ]
-    }
-
-    webhook_data = {
-        "username": app_data[0]['name'],
-        "avatar_url": f"https://cdn.discordapp.com/avatars/{app_data[0]['id']}/{app_data[0]['icon']}.png",
-        **embed
     }
     
     response = requests.post(WEBHOOK_URL, json=webhook_data)
