@@ -95,7 +95,7 @@ def webhook():
                     user_name = user['username']
                     user_globalName = user['global_name']
                     user_avatar = f"https://cdn.discordapp.com/avatars/{user_id}/{user['avatar']}.gif"
-                    current_date = event['event']['timestamp']
+                    current_date = event['timestamp'] #i need to sleep :skull:
                     send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
                     
 
