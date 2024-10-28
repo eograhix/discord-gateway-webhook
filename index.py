@@ -29,23 +29,41 @@ DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    # Handle the PING event
-    if request.json and request.json.get('type') == 0:  # Type 0 = PING
-        save_event("PING", request.json)
-        return '', 204
+        if request.method != 'POST':
+            return Response('invalid method', status=405)
+    
+        signature = request.headers.get('X-Signature-Ed25519')
+        timestamp = request.headers.get('X-Signature-Timestamp')
+        body = request.data.decode("utf-8")
+    
+        if not verify_signature(signature, timestamp, body):
+            abort(401, 'Missing required headers')
+            
+        data = request.get_json()
+        event_type = data.get('type')
+        event = data.get('event')
 
-    signature = request.headers.get('X-Signature-Ed25519')
-    timestamp = request.headers.get('X-Signature-Timestamp')
-    body = request.data.decode("utf-8")
 
-    if not verify_signature(signature, timestamp, body):
-        abort(401, 'Missing required headers')
-
-    event = request.json.get("event", {})
-    event_type = event.get("type")
-
-    save_event("Unknown event type received", request.json)
-    return jsonify({'status': 'Event received'}), 200
+        if event_type == 0:  # PING
+            return Response(status=204)
+        
+        elif event_type == 1:  # Webhook Event
+            if event['type'] == 'APPLICATION_AUTHORIZED':
+                integration_type = event['data'].get('integration_type')
+                if integration_type == 0:
+                    # Guild Install
+                    pass
+                elif integration_type == 1:
+                    # User Install
+                    pass
+                save_event("Unknown event type received", request.json)
+            elif event['type'] == 'ENTITLEMENT_CREATE':
+                pass
+            elif event['type'] == 'QUEST_USER_ENROLLMENT':
+                pass
+            return Response(status=204)
+        else:
+            return Response('invalid request', status=400)
 
 
 
