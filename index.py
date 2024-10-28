@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, abort, Response
 import nacl.signing
 import nacl.exceptions
-import os, json, requests
+import os, json, requests, datetime
 
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
@@ -22,12 +22,20 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar):
                     {"name": "Pseudo:", "value": f"{user_globalName}", "inline": False},
                     
                 ],
-                "thumbnail": {"url": user_avatar}
+                "thumbnail": {"url": user_avatar},
+                                "footer": {"text": f"Date: {current_date}"}
             }
         ]
     }
-    # Send the request to the webhook
-    response = requests.post(WEBHOOK_URL, json=embed)
+
+    webhook_data = {
+        "username": "PopCord",
+        "avatar_url": f"https://cdn.discordapp.com/avatars/994970912271122452/5ed41345bbd638acf364b7324fce3da1.gif",
+        **embed
+    }
+    
+    response = requests.post(WEBHOOK_URL, json=webhook_data)
+    
     if response.status_code != 204:
         print(f"Failed to send webhook: {response.status_code} - {response.text}")
 
