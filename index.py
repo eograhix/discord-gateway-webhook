@@ -37,7 +37,7 @@ def send_webhook_message(user_id, user_name, user_globalName, user_avatar, curre
 
     webhook_data = {
         "username": app_data[0]['name'],
-        "avatar_url": f"https://cdn.discordapp.com/avatars/{app_data[0]['id']}/{app_data[0]['icon']}",
+        "avatar_url": f"https://cdn.discordapp.com/avatars/{app_data[0]['id']}/{app_data[0]['icon']}.png",
         **embed
     }
     
