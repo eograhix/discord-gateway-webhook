@@ -4,7 +4,7 @@ import nacl.exceptions
 import os, json
 
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
-
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
 def save_event(event_type, log_entry):
     global msg
@@ -50,12 +50,13 @@ def webhook():
             if event['type'] == 'APPLICATION_AUTHORIZED':
                 integration_type = event['data'].get('integration_type')
                 if integration_type == 0:
+                    #save_event("Guild Install", request.json)
                     # Guild Install
                     pass
                 elif integration_type == 1:
                     # User Install
+                    save_event("User Install", request.json)
                     pass
-                save_event("Unknown event type received", request.json)
             elif event['type'] == 'ENTITLEMENT_CREATE':
                 pass
             elif event['type'] == 'QUEST_USER_ENROLLMENT':
