@@ -6,8 +6,6 @@ import os, json, requests, aiohttp
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 WEBHOOK_URL = os.getenv("WEBHOOK_URL")
 
-import aiohttp
-
 async def get_app_data(app_id):
     url = f"https://discord.com/api/v9/applications/{app_id}/rpc"
     async with aiohttp.ClientSession() as session:
@@ -16,9 +14,6 @@ async def get_app_data(app_id):
                 return await response.json()
             else:
                 return None  # or handle errors as needed
-
-
-app_data = []
 
 
 def send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date):
@@ -70,7 +65,7 @@ app = Flask(__name__)
 
 
 msg = []
-
+app_data = []
 
 @app.route('/webhook', methods=['POST'])
 async def webhook():
@@ -112,7 +107,7 @@ async def webhook():
                     global app_data
                     if not app_data:
                         r_data = await get_app_data(data.get('application_id'))
-                        app_data.append(r_data)
+                        app_data.append("data" : {r_data})
                         
                     send_webhook_message(user_id, user_name, user_globalName, user_avatar, current_date)
                     
@@ -142,7 +137,7 @@ async def clear_events():
 
 @app.route('/app_data', methods=['GET'])
 async def app_data():
-        return jsonify(app_data)
+        return jsonify(app_data), 200
 
 
 if __name__ == '__main__':
