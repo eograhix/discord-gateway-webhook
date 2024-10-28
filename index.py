@@ -3,6 +3,8 @@ import nacl.signing
 import nacl.exceptions
 import os, json
 
+DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
+
 
 def save_event(event_type, log_entry):
     global msg
@@ -22,9 +24,6 @@ app = Flask(__name__)
 
 
 msg = []
-
-
-DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY")
 
 
 @app.route('/webhook', methods=['POST'])
